@@ -51,8 +51,10 @@ public class UserCtrl {
             List<User> users = new ArrayList<>();
             for(Map<String, Object> map : rs) {
                 User user = new User();
+                user.id = (int)map.get("id");
                 user.username = (String)map.get("username");
                 user.password = (String)map.get("password");
+                user.creationTime = (String)map.get("creationTime");
                 users.add(user);
             }
             return users;
