@@ -24,27 +24,25 @@ public class UserCtrl {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public String post(User user) {
-        System.out.println("HAHHAHAHHAHA");
+    public Response post(User user) {
         return this.dbi.withHandle((handle) -> {
             try {
                 handle.execute("INSERT INTO users (username, password) VALUES (?, ?)", user.username, user.password);
-                return "OK";
-                //return Response.ok("Successfully created user").build();
+                return Response.ok("Successfully created user").build();
             } catch(Exception ex) {
-                if (ex instanceof SQLException) {
-                    if(((SQLException)ex).getErrorCode() == SQL_ERROR_DUPLICATE) {
-                        //return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Username is taken").build();
-                        return "Error";
+                if (ex.getCause() instanceof SQLException) {
+                    if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_DUPLICATE) {
+
+                        return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Username is taken").build();
                     }    
                 }
                 
-                return "Error";
-                //return Response.status(HTTP_RESPONSE_SERVER_ERROR).entity("Unexpected server error").build();
+                return Response.status(HTTP_RESPONSE_SERVER_ERROR).entity(ex.getMessage()).build();
             }
         });
     }
 
+    /* for testing purpose only */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> get() {
