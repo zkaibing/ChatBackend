@@ -10,6 +10,7 @@ public class Challenge extends Application<ChallengeConfiguration> {
         DBI dbi = dbiFactory.build(env, conf.database, "mysql");
         env.jersey().register(new TestResource(dbi));
         env.jersey().register(new UserCtrl(dbi));
+        env.jersey().register(new MessageCtrl(dbi));
     }
 
     public static void main(String[] args) throws Exception {
