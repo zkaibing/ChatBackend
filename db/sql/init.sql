@@ -34,7 +34,7 @@ CREATE TABLE imageMetadata
 (
 	messageId int NOT NULL,
 	width int NOT NULL,
-	length int NOT NULL,
+	height int NOT NULL,
 	CONSTRAINT PK_imageMetadata PRIMARY KEY (messageId),
 	CONSTRAINT FK_imageMetadata_messageId FOREIGN KEY (messageId) REFERENCES messages(id)
 );
@@ -44,7 +44,7 @@ CREATE TABLE videoMetadata
 (
 	messageId int NOT NULL,
 	length int NOT NULL,
-	source varchar,
+	source varchar(255),
 	CONSTRAINT PK_videoMetadata PRIMARY KEY (messageId),
 	CONSTRAINT FK_videoMetadata_messageId FOREIGN KEY (messageId) REFERENCES messages(id)
 );

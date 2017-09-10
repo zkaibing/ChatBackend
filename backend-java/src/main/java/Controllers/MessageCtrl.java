@@ -32,16 +32,18 @@ public class MessageCtrl {
     @POST
     @Path("/text")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(TextMessage text) {
+    public Response postText(TextMessage text) {
         return this.dbi.withHandle((handle) -> {
             try {
                 String query = 
-                "INSER INTO messages" + 
-                "   (senderId, recipientId, type, content)" +
-                "VALUES" + 
-                "   (?, ?, 'TEXT', ?)";
+                "INSERT INTO messages " + 
+                "   (senderId, recipientId, type, content) " +
+                "VALUES " + 
+                "   (?, ?, 'TEXT', ?) ";
 
                 handle.execute(query, text.getSenderId(), text.getRecipientId(), text.getContent());
+                //ResponseBuilder rb = Response.ok("Successfully sent massage");
+                //return rb.build();
                 return Response.ok("Successfully sent massage").build();
             } catch(Exception ex) {
                 /*
@@ -61,25 +63,24 @@ public class MessageCtrl {
     @POST
     @Path("/image")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(ImageMessage image) {
+    public Response postImage(ImageMessage image) {
         return this.dbi.withHandle((handle) -> {
             try {
-                String query = 
-                "INSER INTO messages" + 
-                "   (senderId, recipientId, type, content)" +
-                "VALUES" + 
-                "   (?, ?, 'IMAGE', ?)" +
-                "INSERT INTO imageMetadata" + 
-                "   (messageId, width, height)" +
-                "VALUES" + 
-                "   (LAST_INSERT_ID(), ?, ?)";
+                String query1 = 
+                "INSERT INTO messages " + 
+                "   (senderId, recipientId, type, content) " +
+                "VALUES " + 
+                "   (?, ?, 'IMAGE', ?) ";
 
-                handle.execute(query,
-                               image.getSenderId(),
-                               image.getRecipientId(),
-                               image.getContent(),
-                               image.getWidth(),
-                               image.getHeight());
+                String query2 =
+                "INSERT INTO imageMetadata " + 
+                "   (messageId, width, height) " +
+                "VALUES " + 
+                "   (LAST_INSERT_ID(), ?, ?) ";
+
+                handle.execute(query1, image.getSenderId(), image.getRecipientId(), image.getContent());
+                handle.execute(query2, image.getWidth(), image.getHeight());
+
                 return Response.ok("Successfully sent massage").build();
             } catch(Exception ex) {
                 
@@ -91,25 +92,25 @@ public class MessageCtrl {
     @POST
     @Path("/video")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(VideoMessage video) {
+    public Response postVideo(VideoMessage video) {
         return this.dbi.withHandle((handle) -> {
             try {
-                String query = 
-                "INSER INTO messages" + 
-                "   (senderId, recipientId, type, content)" +
-                "VALUES" + 
-                "   (?, ?, 'VIDEO', ?)" +
-                "INSERT INTO videoMetadata" + 
-                "   (messageId, length, source)" +
-                "VALUES" + 
-                "   (LAST_INSERT_ID(), ?, ?)";
+                String query1 = 
+                "INSERT INTO messages " + 
+                "   (senderId, recipientId, type, content) " +
+                "VALUES " + 
+                "   (?, ?, 'VIDEO', ?); ";
 
-                handle.execute(query,
-                               video.getSenderId(),
-                               video.getRecipientId(),
-                               video.getContent(),
-                               video.getLength(),
-                               video.getSource());
+                String query2 = 
+                "INSERT INTO videoMetadata " + 
+                "   (messageId, length, source) " +
+                "VALUES " + 
+                "   (LAST_INSERT_ID(), ?, ?) ";
+
+                
+                handle.execute(query1, video.getSenderId(), video.getRecipientId(), video.getContent());
+                handle.execute(query2, video.getLength(), video.getSource());
+
                 return Response.ok("Successfully sent massage").build();
             } catch(Exception ex) {
                 
@@ -125,17 +126,17 @@ public class MessageCtrl {
         System.out.println("HAHAHAHAHA");
         return this.dbi.withHandle((handle) -> {
             String query = 
-            "SELECT" +
-            "   m.messageId, m.senderId, m.recipientId, m.type, m.content, m.creationTime" +
-            "   i.width, i.height, v.length, v.source" +
-            "FROM messages m" +
-            "   LEFT JOIN imageMetadata i" +
-            "       ON m.messageId = i.messageId" + 
-            "   LEFT JOIN videoMetadata v" +
-            "       ON m.messageId = v.messageId" +
-            "WHERE m.senderId = ?" +
-            "   AND m.recipientId = ?" +
-            "ORDER BY m.creationTime";
+            "SELECT " +
+            "   m.id, m.senderId, m.recipientId, m.type, m.content, m.creationTime, " +
+            "   i.width, i.height, v.length, v.source " +
+            "FROM messages m " +
+            "   LEFT JOIN imageMetadata i " +
+            "       ON m.id = i.messageId " + 
+            "   LEFT JOIN videoMetadata v " +
+            "       ON m.id = v.messageId " +
+            "WHERE m.senderId = ? " +
+            "   AND m.recipientId = ? " +
+            "ORDER BY m.creationTime ";
 
             List<Map<String, Object>> rows = handle.select(query, senderId, recipientId);
             List<Message> messages = new ArrayList<>();
