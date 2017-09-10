@@ -1,4 +1,7 @@
+package models;
+
 import java.util.Map;
+import models.Message;
 
 public class VideoMessage extends Message {
 	private int length;

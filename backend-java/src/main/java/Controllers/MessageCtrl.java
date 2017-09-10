@@ -1,3 +1,5 @@
+package controllers;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,7 +12,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import org.skife.jdbi.v2.DBI;
-import Message.MessageType;
+import models.Message;
+import models.Message.MessageType;
+import models.TextMessage;
+import models.ImageMessage;
+import models.VideoMessage;
 
 @Path("/messages")
 public class MessageCtrl {
@@ -116,7 +122,7 @@ public class MessageCtrl {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Message> get(@QueryParam("senderId") int senderId,
                              @QueryParam("recipientId") int recipientId) {
-        
+        System.out.println("HAHAHAHAHA");
         return this.dbi.withHandle((handle) -> {
             String query = 
             "SELECT" +
@@ -135,13 +141,13 @@ public class MessageCtrl {
             List<Message> messages = new ArrayList<>();
             for(Map<String, Object> map : rows) {
                 switch(MessageType.valueOf((String)map.get("type"))) {
-                    case MessageType.TEXT:
+                    case TEXT:
                         messages.add(new TextMessage(map));
                         break;
-                    case  MessageType.IMAGE:
+                    case  IMAGE:
                         messages.add(new ImageMessage(map));
                         break;
-                    case MessageType.VIDEO:
+                    case VIDEO:
                         messages.add(new VideoMessage(map));
                         break;
                 }

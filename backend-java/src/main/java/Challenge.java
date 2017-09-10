@@ -2,6 +2,7 @@ import io.dropwizard.Application;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Environment;
 import org.skife.jdbi.v2.DBI;
+import controllers.*;
 
 public class Challenge extends Application<ChallengeConfiguration> {
     @Override

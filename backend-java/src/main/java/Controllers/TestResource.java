@@ -1,3 +1,5 @@
+package controllers;
+
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
@@ -5,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import org.skife.jdbi.v2.DBI;
+import models.TestRepresentation;
 
 @Path("/test")
 public class TestResource {
