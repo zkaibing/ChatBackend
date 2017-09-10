@@ -1,7 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.sql.SQLException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -11,15 +10,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import org.skife.jdbi.v2.DBI;
 
+/*
 @Path("/users")
-public class UserCtrl {
-    private static final int SQL_ERROR_DUPLICATE = 1062;
-    private static final int HTTP_RESPONSE_BAD_REQUEST = 400;
-    private static final int HTTP_RESPONSE_SERVER_ERROR = 500;
-
+public class MessageCtrl {
     private final DBI dbi;
 
-    public UserCtrl(DBI dbi) {
+    public MessageCtrl(DBI dbi) {
         this.dbi = dbi;
     }
 
@@ -28,11 +24,12 @@ public class UserCtrl {
     public Response post(User user) {
         return this.dbi.withHandle((handle) -> {
             try {
-                handle.execute("INSERT INTO users (username, password) VALUES (?, ?)", user.getUsername(), user.getPassword());
+                handle.execute("INSERT INTO users (username, password) VALUES (?, ?)", user.username, user.password);
                 return Response.ok("Successfully created user").build();
             } catch(Exception ex) {
                 if (ex.getCause() instanceof SQLException) {
                     if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_DUPLICATE) {
+
                         return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Username is taken").build();
                     }    
                 }
@@ -42,18 +39,24 @@ public class UserCtrl {
         });
     }
 
-    /* for testing purpose only */
+    /* for testing purpose only *
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> get() {
         return this.dbi.withHandle((handle) -> {
             List<Map<String, Object>> rs = handle.select("SELECT * FROM users");
-            List<User> users = rs.stream()
-                .map(row -> new User(row))
-                .collect(Collectors.toList());
+            List<User> users = new ArrayList<>();
+            for(Map<String, Object> map : rs) {
+                User user = new User();
+                user.id = (int)map.get("id");
+                user.username = (String)map.get("username");
+                user.password = (String)map.get("password");
+                user.creationTime = (String)map.get("creationTime");
+                users.add(user);
+            }
             return users;
         });
     }
 }
 
-
+*/
