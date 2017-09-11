@@ -18,8 +18,8 @@ public class VideoMessage extends Message {
 	}
 
 	@Override
-	public boolean isValid() {
-		return super.isValid() && length > 0;
+	public boolean validate() {
+		return super.validate() && length > 0;
 	}
 
 	public int getLength() {

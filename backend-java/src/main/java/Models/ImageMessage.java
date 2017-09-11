@@ -18,8 +18,8 @@ public class ImageMessage extends Message {
 	}
 
 	@Override
-	public boolean isValid() {
-		return super.isValid() && width > 0 && height > 0;
+	public boolean validate() {
+		return super.validate() && width > 0 && height > 0;
 	}
 
 	public int getWidth() {

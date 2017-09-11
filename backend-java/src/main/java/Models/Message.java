@@ -28,8 +28,8 @@ public abstract class Message {
 		this.creationTime = ((Timestamp)map.get("creationTime")).toString();
 	}
 
-	public boolean isValid() {
-		return senderId > 0 && recipientId > 0 && content != null;
+	public boolean validate() {
+		return senderId > 0 && recipientId > 0 && content != null && !content.isEmpty();
 	}
 
 	public int getId() {

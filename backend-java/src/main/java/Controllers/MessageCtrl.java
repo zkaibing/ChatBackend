@@ -38,7 +38,7 @@ public class MessageCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response postText(TextMessage text) {
-        if(!text.isValid()) {
+        if(!text.validate()) {
             return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
         }
 
@@ -71,7 +71,7 @@ public class MessageCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response postImage(ImageMessage image) {
-        if(!image.isValid()) {
+        if(!image.validate()) {
             return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
         }
         return this.dbi.withHandle((handle) -> {
@@ -110,7 +110,7 @@ public class MessageCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response postVideo(VideoMessage video) {
-        if(!video.isValid()) {
+        if(!video.validate()) {
             return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
         }
         return this.dbi.withHandle((handle) -> {

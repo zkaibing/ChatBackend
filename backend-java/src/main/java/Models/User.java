@@ -18,6 +18,10 @@ public class User {
         this.creationTime = ((Timestamp)map.get("creationTime")).toString();
     }
 
+    public boolean validate() {
+        return username != null && !username.isEmpty() && password != null && !password.isEmpty(); 
+    }
+
     public int getId() {
     	return id;
     }

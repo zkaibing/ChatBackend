@@ -33,6 +33,10 @@ public class UserCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response post(User user) {
+        if(!user.validate()) {
+            return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
+        }
+
         return this.dbi.withHandle((handle) -> {
             try {
                 handle.execute("INSERT INTO users (username, password) VALUES (?, ?)", user.getUsername(), user.getPassword());
