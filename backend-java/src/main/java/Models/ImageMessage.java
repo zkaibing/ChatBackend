@@ -17,6 +17,11 @@ public class ImageMessage extends Message {
 		this.height = (int)map.get("height");
 	}
 
+	@Override
+	public boolean isValid() {
+		return super.isValid() && width > 0 && height > 0;
+	}
+
 	public int getWidth() {
 		return width;
 	}

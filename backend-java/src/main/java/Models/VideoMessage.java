@@ -17,6 +17,11 @@ public class VideoMessage extends Message {
 		this.source = (String)map.get("source");
 	}
 
+	@Override
+	public boolean isValid() {
+		return super.isValid() && length > 0;
+	}
+
 	public int getLength() {
 		return length;
 	}

@@ -16,11 +16,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import org.skife.jdbi.v2.DBI;
 import models.User;
-//import models.ResponseEntity;
 
 @Path("/users")
 public class UserCtrl {
-    private static final int SQL_ERROR_DUPLICATE = 1062;
+    private static final int SQL_ERROR_DUPLICATE_KEY = 1062;
     private static final int HTTP_RESPONSE_BAD_REQUEST = 400;
     private static final int HTTP_RESPONSE_SERVER_ERROR = 500;
 
@@ -41,7 +40,7 @@ public class UserCtrl {
                 return Response.ok(String.valueOf(id)).build();
             } catch(Exception ex) {
                 if (ex.getCause() instanceof SQLException) {
-                    if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_DUPLICATE) {
+                    if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_DUPLICATE_KEY) {
                         return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Username is taken").build();
                     }    
                 }

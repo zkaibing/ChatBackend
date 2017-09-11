@@ -23,6 +23,7 @@ import models.VideoMessage;
 
 @Path("/messages")
 public class MessageCtrl {
+    private static final int SQL_ERROR_FOREIGN_KEY = 1452;
     private static final int HTTP_RESPONSE_BAD_REQUEST = 400;
     private static final int HTTP_RESPONSE_SERVER_ERROR = 500;
 
@@ -37,6 +38,10 @@ public class MessageCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response postText(TextMessage text) {
+        if(!text.isValid()) {
+            return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
+        }
+
         return this.dbi.withHandle((handle) -> {
             try {
                 String query = 
@@ -50,6 +55,11 @@ public class MessageCtrl {
                 BigInteger id = ((BigInteger)handle.select("SELECT LAST_INSERT_ID() AS id").get(0).get("id"));
                 return Response.ok(String.valueOf(id)).build();
             } catch(Exception ex) {
+                if (ex.getCause() instanceof SQLException) {
+                    if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_FOREIGN_KEY) {
+                        return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("User doesn't exist").build();
+                    }    
+                }
                 System.out.println(ex.getMessage());
                 return Response.status(HTTP_RESPONSE_SERVER_ERROR).entity("Failed to send message").build();
             }
@@ -61,6 +71,9 @@ public class MessageCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response postImage(ImageMessage image) {
+        if(!image.isValid()) {
+            return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
+        }
         return this.dbi.withHandle((handle) -> {
             try {
                 String query1 = 
@@ -81,6 +94,11 @@ public class MessageCtrl {
                 BigInteger id = ((BigInteger)handle.select("SELECT LAST_INSERT_ID() AS id").get(0).get("id"));
                 return Response.ok(String.valueOf(id)).build();
             } catch(Exception ex) {
+                if (ex.getCause() instanceof SQLException) {
+                    if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_FOREIGN_KEY) {
+                        return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("User doesn't exist").build();
+                    }    
+                }
                 System.out.println(ex.getMessage());
                 return Response.status(HTTP_RESPONSE_SERVER_ERROR).entity("Failed to send message").build();
             }
@@ -92,6 +110,9 @@ public class MessageCtrl {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response postVideo(VideoMessage video) {
+        if(!video.isValid()) {
+            return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("Invalid fields").build();
+        }
         return this.dbi.withHandle((handle) -> {
             try {
                 String query1 = 
@@ -113,6 +134,13 @@ public class MessageCtrl {
                 BigInteger id = ((BigInteger)handle.select("SELECT LAST_INSERT_ID() AS id").get(0).get("id"));
                 return Response.ok(String.valueOf(id)).build();
             } catch(Exception ex) {
+                if (ex.getCause() instanceof SQLException) {
+                    System.out.println("SQLException!!!");
+                    System.out.println(((SQLException)ex.getCause()).getErrorCode());
+                    if(((SQLException)ex.getCause()).getErrorCode() == SQL_ERROR_FOREIGN_KEY) {
+                        return Response.status(HTTP_RESPONSE_BAD_REQUEST).entity("User doesn't exist").build();
+                    }    
+                }
                 System.out.println(ex.getMessage());
                 return Response.status(HTTP_RESPONSE_SERVER_ERROR).entity("Failed to send message").build();
             }
@@ -121,8 +149,8 @@ public class MessageCtrl {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@QueryParam("senderId") int senderId,
-                        @QueryParam("recipientId") int recipientId,
+    public Response get(@QueryParam("user1") int user1,
+                        @QueryParam("user2") int user2,
                         @QueryParam("messageCnt") Integer messageCnt,
                         @QueryParam("pageNum") Integer pageNum) {
         return this.dbi.withHandle((handle) -> {
@@ -136,14 +164,16 @@ public class MessageCtrl {
                 "       ON m.id = i.messageId " + 
                 "   LEFT JOIN videoMetadata v " +
                 "       ON m.id = v.messageId " +
-                "WHERE m.senderId = ? " +
-                "   AND m.recipientId = ? " +
+                "WHERE (m.senderId = ? " +
+                "   AND m.recipientId = ?) " +
+                "OR (m.senderId = ? " +
+                "   AND m.recipientId = ?) " +
                 "ORDER BY m.creationTime ";
 
                 if(messageCnt != null && messageCnt > 0 && pageNum != null && pageNum > 0) {
                     query += String.format("LIMIT %d, %d ", (pageNum - 1) * messageCnt, messageCnt);
                 }
-                List<Map<String, Object>> rows = handle.select(query, senderId, recipientId);
+                List<Map<String, Object>> rows = handle.select(query, user1, user2, user2, user1);
                 List<Message> messages = new ArrayList<>();
                 for(Map<String, Object> map : rows) {
                     switch(MessageType.valueOf((String)map.get("type"))) {
