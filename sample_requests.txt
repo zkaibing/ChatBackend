@@ -1,5 +1,5 @@
 
-This app is implemented in java.
+This app was implemented in Java.
 ================================
 
 
@@ -36,15 +36,15 @@ SEND MESSAGE
    {
 		"senderId": 1,
 		"recipientId": 2,
-		"content": "my first text messae"
+		"content": "my first text message"
    }
 
-2) sending message with inexisting sender/recipient would fail
+2) sending message with nonexistent sender/recipient would fail
    POST localhost:18000/messages/text
    {
 		"senderId": 1,
 		"recipientId": 3,
-		"content": "my first text messae"
+		"content": "my first text message"
    }
 
 3) sending message with no content would fail
@@ -59,7 +59,7 @@ SEND MESSAGE
    {
 		"senderId": 2,
 		"recipientId": 1,
-		"content": "my first image messae",
+		"content": "my first image message",
 		"width": 5,
 		"height": 10
    }
@@ -69,7 +69,7 @@ SEND MESSAGE
     {
 		"senderId": 2,
 		"recipientId": 1,
-		"content": "my first image messae",
+		"content": "my first image message",
 		"width": 5
 	}
 
@@ -78,7 +78,7 @@ SEND MESSAGE
 	{
 		"senderId": 1,
 		"recipientId": 2,
-		"content": "my first video messae",
+		"content": "my first video message",
 		"length": 15,
 		"source": "youtube"
 	}
@@ -88,7 +88,7 @@ SEND MESSAGE
 	{
 		"senderId": 1,
 		"recipientId": 2,
-		"content": "my first video messae",
+		"content": "my first video message",
 		"source": "youtube"
 	}
 
