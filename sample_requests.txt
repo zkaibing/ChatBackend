@@ -1,0 +1,107 @@
+
+This app is implemented in java.
+================================
+
+
+CREATE USER
+-----------
+
+1) creating new user returns inserted user id
+   POST localhost:18000/users 
+   {
+		"username": "User1",
+		"password": "123"
+   }
+
+2) creating another user
+   POST localhost:18000/users
+   {
+		"username": "User2",
+		"password": "abc"
+   }
+
+2) creating user with existing name would fail
+   POST localhost:18000/users
+   {
+		"username": "User1",
+		"password": "456"
+   }
+
+
+SEND MESSAGE
+------------
+
+1) sending text message returns inserted message id
+   POST localhost:18000/messages/text
+   {
+		"senderId": 1,
+		"recipientId": 2,
+		"content": "my first text messae"
+   }
+
+2) sending message with inexisting sender/recipient would fail
+   POST localhost:18000/messages/text
+   {
+		"senderId": 1,
+		"recipientId": 3,
+		"content": "my first text messae"
+   }
+
+3) sending message with no content would fail
+   POST localhost:18000/messages/text
+   {
+		"senderId": 1,
+		"recipientId": 3
+   }
+
+4) sending image message returns inserted message id
+   POST localhost:18000/messages/image
+   {
+		"senderId": 2,
+		"recipientId": 1,
+		"content": "my first image messae",
+		"width": 5,
+		"height": 10
+   }
+
+5) sending image message with no width/height would fail
+    POST localhost:18000/messages/image
+    {
+		"senderId": 2,
+		"recipientId": 1,
+		"content": "my first image messae",
+		"width": 5
+	}
+
+6) sending video message returns inserted message id
+	POST localhost:18000/messages/video
+	{
+		"senderId": 1,
+		"recipientId": 2,
+		"content": "my first video messae",
+		"length": 15,
+		"source": "youtube"
+	}
+
+7) sending video message with no length would fail
+	POST localhost:18000/messages/video
+	{
+		"senderId": 1,
+		"recipientId": 2,
+		"content": "my first video messae",
+		"source": "youtube"
+	}
+
+
+FETCH MESSAGES
+--------------
+
+1) fetching messages between two users
+	GET http://localhost:18000/messages?user1=1&user2=2
+
+2) fetching messages with pagination 
+	GET http://localhost:18000/messages?user1=1&user2=2&messageCnt=2&pageNum=1
+
+
+
+   

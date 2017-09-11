@@ -33,6 +33,10 @@ public class MessageCtrl {
         this.dbi = dbi;
     }
 
+
+    /**
+     * Sends text message
+     */
     @POST
     @Path("/text")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -66,6 +70,10 @@ public class MessageCtrl {
         });
     }
 
+
+    /**
+     * Sends image message
+     */
     @POST
     @Path("/image")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -105,6 +113,10 @@ public class MessageCtrl {
         });
     }
 
+
+    /**
+     * Sends video message
+     */
     @POST
     @Path("/video")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -147,6 +159,10 @@ public class MessageCtrl {
         });
     }
 
+
+    /**
+     * Gets a list of messages between two users
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(@QueryParam("user1") int user1,

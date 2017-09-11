@@ -17,6 +17,7 @@ import javax.ws.rs.Consumes;
 import org.skife.jdbi.v2.DBI;
 import models.User;
 
+
 @Path("/users")
 public class UserCtrl {
     private static final int SQL_ERROR_DUPLICATE_KEY = 1062;
@@ -29,6 +30,9 @@ public class UserCtrl {
         this.dbi = dbi;
     }
 
+    /**
+     * Creates new user
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
@@ -51,19 +55,6 @@ public class UserCtrl {
                 System.out.println(ex.getMessage());
                 return Response.status(HTTP_RESPONSE_SERVER_ERROR).entity("Failed to create user").build();
             }
-        });
-    }
-
-    /* for testing purpose only */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<User> get() {
-        return this.dbi.withHandle((handle) -> {
-            List<Map<String, Object>> rs = handle.select("SELECT * FROM users");
-            List<User> users = rs.stream()
-                .map(row -> new User(row))
-                .collect(Collectors.toList());
-            return users;
         });
     }
 }
